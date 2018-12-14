@@ -1,0 +1,45 @@
+Clipping
+InguzDSP creates a few files in /usr/share/InguzEQ/, after you've set up Inguz there are 2 files of interest: error & log.txt. You can check for errors with:
+
+Code:
+cat /usr/share/InguzEQ/error
+
+It should give you no output at all.
+
+The file log.txt can get big and we're only interested in the latest data so we'll use 'tail' to just give us the end of the file and print any new information as it comes in:
+
+Code:
+tail -f /usr/share/InguzEQ/log.txt
+
+If there's clipping going on, it will print 'CLIPPING+' or 'CLIPPING-' and something along the lines of:
+
+Code:
+20180105181413: 01:53:01:53:01:02 2387377 samples, 404442.711 ms (1610.266 init), 0.1335 * realtime, peak 0.865 dBfs
+
+We're only interested in the last bit, the peak-value, a peak > 0 means clipping.
+The log will also contain the following information:
+
+Code:
+20180105181939: 00:04:20:16:cd:70 24/96000 PCM => 24/96000 PCM TRIANGULAR, gain -16 dB
+
+Once again, we're only interested in the last bit, the gain, if you're experiencing clipping you should adjust it.
+In the above example a gain of 1dB lower would already prevent the clipping. To adjust the clipping enter the following in a terminal:
+
+Code:
+sudo nano /usr/share/squeezeboxserver/Bin/i386-linux/InguzDSP.exe.config
+Enter CTRL+X when done, followed by 'y' to close and save the file. InguzDSP will pick up the changes when you restart playback/next song.
+
+I'd advise to look for the loudest music in your collection, garage-rock, punk, etc is usually very loud, your loudest music's peak should approach 0 dB but not reach it. The loudest file in my collection (I think) is 'Love Licks' by 'The Black Box Revelation' but there isn't much difference with the 'Foo Fighters'.
+
+
+Resampling
+By default InguzDSP will turn off when LMS needs to resample (except for MP3 & OGG-files). I've added extra profiles to Plugin.pm that allow for resampling and even upsampling. There are 4 extra profiles in there:
+template_FLAC24_resample: allows for resampling when necessary and spits out 24bit FLAC's
+template_FLAC16_resample: allows for resampling when necessary and spits out 16bit FLAC's
+template_FLAC24_upsample192 and template_FLAC24_upsample96: upsampling to respectively 24bit/192kHz and 24bit/96kHz
+
+InguzDSP uses 24bit filters and all processing is done in 24bit, template_FLAC16_resample turns it back into 16bit after the processing is done.
+
+On line 3596 of the attached Plugin.pm you'll find 2 extra if-statements checking for the squeezebox-model, you should adjust here if you want to use a certain profile.
+I've got a Receiver (which can playback 24bit/48kHz) so I've got it setup to apply the FLAC24_resample-template when the modelname equals 'receiver', and I've got a SqueezeLite-box with a soundcard that can only do 16bit/48kHz so I've got that setup to use the FLAC16_resample-template.
+You can find the model-name of your device on the LMS-settings page. If you've already got InguzDSP set up, replacing the Plugin.pm-file and restarting LMS twice should take care of the settings but you might have to delete the file 'custom-convert.conf' in the same folder (/usr/share/squeezeboxserver/Plugins/InguzEQ/) before restarting.

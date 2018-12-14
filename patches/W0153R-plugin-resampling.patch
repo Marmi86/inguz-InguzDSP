@@ -1,0 +1,317 @@
+--- Plugin.pm.orig	2018-12-14 08:19:21.000000000 -0500
++++ Plugin.pm	2018-01-05 18:13:24.000000000 -0500
+@@ -109,6 +109,11 @@
+ # 0.9.7    20060730   Add 'flatness' control
+ # 0.9.6    20060716   Transcode to FLAC24 to avoid losing any dynamic range
+ # 0.9.5    20060603   Beta release under MIT-style free software license
++#
++# JB's edits
++# 20170805			Warning: Using a hash as a reference is deprecated at 3138
++# 					L3138 $request->addResultLoop( 'Points_loop', $cnt, $ff, %h->{$ff} );
++# 					changed %h->{$ff} to $h{$ff}
+ 
+ 
+ use strict;
+@@ -3135,7 +3140,7 @@
+ 				my %h = %$f;
+ 				foreach my $ff( keys %h )
+ 				{
+-					$request->addResultLoop( 'Points_loop', $cnt, $ff, %h->{$ff} );
++					$request->addResultLoop( 'Points_loop', $cnt, $ff, $h{$ff} );
+ 					$cnt++;
+ 				}
+ 			}
+@@ -3588,10 +3593,23 @@
+ 	{
+ 		if( $::VERSION ge '7.3' )
+ 		{
+-			# if the player supports flac, use it
+-			# except for softsqueeze, which doesn't decode FLAC24 properly
+-			debug( "client " . $clientID . " is " . $client->model() . ", using FLAC24" );
+-			$template = template_FLAC24();
++			if( $client->model() eq "receiver" )
++			{
++				debug( "client " . $clientID . " is " . $client->model() . ", using FLAC24_resample" );
++				$template = template_FLAC24_resample();
++			}
++			elsif( $client->model() eq "squeezelite" )
++			{
++				debug( "client " . $clientID . " is " . $client->model() . ", using FLAC16_resample" );
++				$template = template_FLAC16_resample();
++			}
++			else
++			{
++				# if the player supports flac, use it
++				# except for softsqueeze, which doesn't decode FLAC24 properly
++				debug( "client " . $clientID . " is " . $client->model() . ", using FLAC24" );
++				$template = template_FLAC24();
++			}
+ 		}
+ 		else
+ 		{
+@@ -3859,6 +3877,265 @@
+ 
+ EOF1
+ }
++
++# transcode for 16-bit FLAC output (squeezelite) with resample
++sub template_FLAC16_resample
++{
++	return <<'EOF1';
++
++aap flc * $CLIENTID$
++	#IFRD:{RESAMPLE=-r %d}
++	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++aif flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=-r %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++alc flc * $CLIENTID$
++	# FD:{RESAMPLE=-r %d}
++	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++amb flc * $CLIENTID$
++	# IFT:{START=-skip %t}D:{RESAMPLE=-r %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++ape flc * $CLIENTID$
++	# FD:{RESAMPLE=-r %d}
++	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++flc flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}D:{RESAMPLE=-r %d}
++	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++mov flc * $CLIENTID$
++	# FRD:{RESAMPLE=-r %d}
++	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++mp3 flc * $CLIENTID$
++	# IFD:{RESAMPLE=--resample %D}
++	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 - gain -1
++
++mpc flc * $CLIENTID$
++	# IRD:{RESAMPLE=-r %d}
++	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++ogg flc * $CLIENTID$
++	# IFD:{RESAMPLE=-r %D}
++	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 - gain -1
++
++uhj flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=-r %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++wav flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=-r %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++wma flc * $CLIENTID$
++	# F:{PATH=%f}R:{PATH=%F}D:{RESAMPLE=-r %d}
++	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++wvp flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}D:{RESAMPLE=-r %d}
++	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [InguzDSP] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 -b 16 $RESAMPLE$ - gain -1
++
++EOF1
++}
++
++
++# transcode for 24-bit FLAC output (receiver) with resample
++sub template_FLAC24_resample
++{
++	return <<'EOF1';
++
++aap flc * $CLIENTID$
++	#IFRD:{RESAMPLE=rate -v %d}
++	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++aif flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=rate -v %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++alc flc * $CLIENTID$
++	# FD:{RESAMPLE=rate -v %d}
++	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++amb flc * $CLIENTID$
++	# IFT:{START=-skip %t}D:{RESAMPLE=rate -v %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++ape flc * $CLIENTID$
++	# FD:{RESAMPLE=rate -v %d}
++	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++flc flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}D:{RESAMPLE=rate -v %d}
++	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++mov flc * $CLIENTID$
++	# FRD:{RESAMPLE=rate -v %d}
++	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++mp3 flc * $CLIENTID$
++	# IFD:{RESAMPLE=--resample %D}
++	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
++
++mpc flc * $CLIENTID$
++	# IRD:{RESAMPLE=rate -v %d}
++	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++ogg flc * $CLIENTID$
++	# IFD:{RESAMPLE=-r %D}
++	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [flac] -cs -5 --totally-silent -
++
++uhj flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=rate -v %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++wav flc * $CLIENTID$
++	# FT:{START=-skip %t}D:{RESAMPLE=rate -v %d}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++wma flc * $CLIENTID$
++	# F:{PATH=%f}R:{PATH=%F}D:{RESAMPLE=rate -v %d}
++	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++wvp flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}D:{RESAMPLE=rate -v %d}
++	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [InguzDSP] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - $RESAMPLE$
++
++EOF1
++}
++
++
++# transcode for 24-bit FLAC output with upsample to 192k
++sub template_FLAC24_upsample192
++{
++	return <<'EOF1';
++
++aap flc * $CLIENTID$
++	#IFR
++	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++aif flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++alc flc * $CLIENTID$
++	# F
++	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++amb flc * $CLIENTID$
++	# IFT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++ape flc * $CLIENTID$
++	# F
++	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++flc flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}
++	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++mov flc * $CLIENTID$
++	# FR
++	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++mp3 flc * $CLIENTID$
++	# IFD:{RESAMPLE=--resample %D}
++	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++mpc flc * $CLIENTID$
++	# IR
++	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++ogg flc * $CLIENTID$
++	# IFD:{RESAMPLE=-r %D}
++	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++uhj flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++wav flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++wma flc * $CLIENTID$
++	# F:{PATH=%f}R:{PATH=%F}
++	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++wvp flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}
++	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [InguzDSP] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 192000
++
++EOF1
++}
++
++
++# transcode for 24-bit FLAC output with upsample to 96k
++sub template_FLAC24_upsample96
++{
++	return <<'EOF1';
++
++aap flc * $CLIENTID$
++	#IFR
++	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++aif flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++alc flc * $CLIENTID$
++	# F
++	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++amb flc * $CLIENTID$
++	# IFT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++ape flc * $CLIENTID$
++	# F
++	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++flc flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}
++	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++mov flc * $CLIENTID$
++	# FR
++	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++mp3 flc * $CLIENTID$
++	# IFD:{RESAMPLE=--resample %D}
++	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++mpc flc * $CLIENTID$
++	# IR
++	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++ogg flc * $CLIENTID$
++	# IFD:{RESAMPLE=-r %D}
++	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++uhj flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++wav flc * $CLIENTID$
++	# FT:{START=-skip %t}
++	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++wma flc * $CLIENTID$
++	# F:{PATH=%f}R:{PATH=%F}
++	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++wvp flc * $CLIENTID$
++	# FT:{START=--skip=%t}U:{END=--until=%v}
++	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [InguzDSP] -id "$CLIENTID$" -wav -wavo -d 24 | [sox] -q -t wav - -t flac -C 0 - rate -v 96000
++
++EOF1
++}
+ 
+ 
+ 1;
