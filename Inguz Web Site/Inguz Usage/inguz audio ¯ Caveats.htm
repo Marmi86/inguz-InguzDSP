@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- copyright (c) 2006, 2007 inguzaudio.com. All rights reserved. -->
+<head><script type="text/javascript" src="/static/js/analytics.js?v=1504952612.0" charset="utf-8"></script>
+
+<script type="text/javascript">archive_analytics.values.service='wb';archive_analytics.values.server_name='wwwb-app46.us.archive.org';archive_analytics.values.server_ms=631;</script><script type="text/javascript" src="/static/js/wbhack.js?v=1504952612.0" charset="utf-8"></script>
+
+<script type="text/javascript">
+__wbhack.init('https://web.archive.org/web');
+</script>
+<link rel="stylesheet" type="text/css" href="/static/css/banner-styles.css?v=1504952612.0" />
+<link rel="stylesheet" type="text/css" href="/static/css/iconochive.css?v=1504952612.0" />
+
+<!-- End Wayback Rewrite JS Include -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>inguz audio   &raquo; Caveats</title>
+<link rel="stylesheet" href="https://web.archive.org/web/20111123042312cs_/http://inguzaudio.com/inguz.css" type="text/css"/>
+<link rel="shortcut icon" href="https://web.archive.org/web/20111123042312im_/http://inguzaudio.com/favicon.ico" type="image/x-icon"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - blog" href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/blog/feed/"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - forums" href="https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?act=rssout&amp;id=1"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - gallery" href="https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/galleryrss.php"/>
+<script type="text/javascript" src="https://web.archive.org/web/20111123042312js_/http://inguzaudio.com/ips_menu.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20111123042312js_/http://inguzaudio.com/ips_menu_html.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20111123042312js_/http://include.reinvigorate.net/re_.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+re_("w3413-dh1v6ui0w9");
+//]]>
+</script>
+</head>
+<body>
+
+<div class="body">
+
+<div id="content-main">
+	<h1>Caveats</h1>
+	<div class="entry">
+		<p>Room correction is a great benefit. But there are some caveats, which you should be aware of. Some of these are inherent in digital room correction, while others are due to limitations in the InguzEQ/InguzDSP software, and some are a function of the SlimServer/Squeezebox/Transporter software architecture.</p>
+<p>This list is probably incomplete, but hopefully covers the main points.</p>
+<h2>General room-correction things</h2>
+<ul>
+<li>You&#8217;ll usually find that volume is reduced with the processor.  It&#8217;s sometimes difficult to get the right balance between gain and clipping.  See the <a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/logfile/">log file</a> for more details.</li>
+<li>The stronger room-correction you apply, the smaller the &#8220;<a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/sweetspot/">sweet spot</a>&#8221; becomes.</li>
+<li>Too-extreme correction can cause audible artifacts (&#8220;pre-echo&#8221; and the like).</li>
+</ul>
+<h2>InguzEQ / InguzDSP things</h2>
+<ul>
+<li><a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/caveats/performance/">Performance</a>: you may find the filter processor using lots of CPU power.</li>
+<li>The plugin doesn&#8217;t have a &#8220;slimserver web browser user interface&#8221; &#8212; you can only control settings via the remote control. This is on the to-do list.</li>
+<li>Several things &#8211; cue sheet handing, some internet radio stations &#8211; are on the &#8220;not yet properly tested&#8221; list. When the QA department expands to more than just the monkey on my shoulder, that should change.</li>
+</ul>
+<h2>SlimServer / Squeezebox things</h2>
+<ul>
+<li>Most <a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/caveats/file-types/">audio file types</a> work. But note: to play MP3s you will need to install LAME.</li>
+<li>Changes to any EQ settings will not take effect immediately. Most changes will actually begin to be processed immediately, but the Squeezebox has a large buffer, which will usually be full of processed data already, so you won&#8217;t hear the change until a while later (several seconds, or in the worst case until the start of the next track).</li>
+<li>FF and RW within a track only work with SqueezeCenter 7.3 and later, and WAV, FLAC or MP3. </li>
+<li>If you have a slow or flaky WiFi connection, you might find it behaves worse than before. The InguzDSP system turns everything (even low-bitrate MP3s) into 24-bit FLAC to send to the Squeezebox, which can take quite a lot of networking.</li>
+<li><a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/caveats/synchronization/">Synchronized</a> Squeezeboxes or Transporters don&#8217;t behave as you might expect.</li>
+<li>There are problems with <a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/caveats/internet-radio/">internet radio</a> using InguzDSP with SlimServer versions 6.5.0 and before.</li>
+<li>There may be slight gaps between tracks using InguzDSP with SlimServer versions 6.5.3 and before.</li>
+</ul>
+	</div>
+</div>
+</div>
+
+<span class="breadcrumb"><a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/" title="">inguz audio</a> / <a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/" title="Usage">Usage</a> / <a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/caveats/" title="Caveats">Caveats</a></span>
+
+<span class="inguzlogo"><a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/"><img src="https://web.archive.org/web/20111123042312im_/http://inguzaudio.com/inguz_small.png" width="192" height="104" border="0" alt="inguz audio"/></a></span>
+
+<span class="copyshort">&copy; 2011</span>
+
+<div id="tab_bar">
+	<ul>
+		<li id="inguz_main"><a href="https://web.archive.org/web/20111123042312/http://inguzaudio.com/">inguz audio <img src="https://web.archive.org/web/20111123042312im_/http://inguzaudio.com/menu_action_down.gif" style="border:none; margin-top:4px;" alt="V"/></a></li>
+		<li id="inguz_forums"><a href="https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/">forum <img src="https://web.archive.org/web/20111123042312im_/http://inguzaudio.com/menu_action_down.gif" style="border:none; margin-top:4px;" alt="V"/></a></li>
+		<li><a href="https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?autocom=gallery">gallery</a></li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+menu_build_menu(
+	"inguz_main",
+	new Array(
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/' onclick='menu_action_close();'>home</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/blog/' onclick='menu_action_close();'>blog</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/downloads/' onclick='menu_action_close();'>downloads</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/installation/' onclick='menu_action_close();'>installation</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/usage/' onclick='menu_action_close();'>usage</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/measurement/' onclick='menu_action_close();'>measurement</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://inguzaudio.com/support/' onclick='menu_action_close();'>support</a>"
+	)
+);
+menu_build_menu(
+	"inguz_forums",
+	new Array(
+			 " <a href='https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?' onclick='menu_action_close();'>home</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?act=Members' onclick='menu_action_close();'>members</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?act=Search&amp;f=0' onclick='menu_action_close();'>search</a>",
+			 " <a href='https://web.archive.org/web/20111123042312/http://forum.inguzaudio.com/index.php?act=Help' onclick='menu_action_close();'>help</a>"
+	)
+);
+
+menu_do_global_init();
+//]]>
+</script>
+
+</body>
+</html>

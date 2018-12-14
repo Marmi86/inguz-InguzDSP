@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- copyright (c) 2006, 2007 inguzaudio.com. All rights reserved. -->
+<head><script type="text/javascript" src="/static/js/analytics.js?v=1504952612.0" charset="utf-8"></script>
+
+<script type="text/javascript">archive_analytics.values.service='wb';archive_analytics.values.server_name='wwwb-app19.us.archive.org';archive_analytics.values.server_ms=431;</script><script type="text/javascript" src="/static/js/wbhack.js?v=1504952612.0" charset="utf-8"></script>
+
+<script type="text/javascript">
+__wbhack.init('https://web.archive.org/web');
+</script>
+<link rel="stylesheet" type="text/css" href="/static/css/banner-styles.css?v=1504952612.0" />
+<link rel="stylesheet" type="text/css" href="/static/css/iconochive.css?v=1504952612.0" />
+
+<!-- End Wayback Rewrite JS Include -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>inguz audio   &raquo; Installation on Red Hat linux</title>
+<link rel="stylesheet" href="https://web.archive.org/web/20120403021808cs_/http://inguzaudio.com/inguz.css" type="text/css"/>
+<link rel="shortcut icon" href="https://web.archive.org/web/20120403021808im_/http://inguzaudio.com/favicon.ico" type="image/x-icon"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - blog" href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/blog/feed/"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - forums" href="https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?act=rssout&amp;id=1"/>
+<link rel="alternate" type="application/rss+xml" title="inguz audio - gallery" href="https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/galleryrss.php"/>
+<script type="text/javascript" src="https://web.archive.org/web/20120403021808js_/http://inguzaudio.com/ips_menu.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20120403021808js_/http://inguzaudio.com/ips_menu_html.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20120403021808js_/http://include.reinvigorate.net/re_.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+re_("w3413-dh1v6ui0w9");
+//]]>
+</script>
+</head>
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<script type="text/javascript" src="/static/js/timestamp.js?v=1504952612.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/graph-calc.js?v=1504952612.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/auto-complete.js?v=1504952612.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/toolbar.js?v=1504952612.0" charset="utf-8"></script>
+
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+.wb-autocomplete-suggestions {
+    text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+    position: absolute; display: none; z-index: 2147483647; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+}
+.wb-autocomplete-suggestion { position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333; }
+.wb-autocomplete-suggestion b { font-weight: bold; }
+.wb-autocomplete-suggestion.selected { background: #f0f0f0; }
+</style>
+<div id="wm-ipp" lang="en" style="display:none;direction:ltr;">
+<div style="position:fixed;left:0;top:0;right:0;">
+<div id="wm-ipp-inside">
+  <div style="position:relative;">
+    <div id="wm-logo" style="float:left;width:130px;padding-top:10px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/static/images/toolbar/wayback-toolbar-logo.png" alt="Wayback Machine" width="110" height="39" border="0" /></a>
+    </div>
+    <div class="r" style="float:right;">
+      <div id="wm-btns" style="text-align:right;height:25px;">
+	<a href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-5px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" onclick="__wm.h(event);return false;" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" style="text-align:right;">
+	<a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://web.archive.org/web/20120403021808/http://inguzaudio.com/installation/linux/', '', 'height=400,width=600'); return false;" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a href="#" onclick="window.open('https://twitter.com/intent/tweet?text=https://web.archive.org/web/20120403021808/http://inguzaudio.com/installation/linux/&amp;via=internetarchive', '', 'height=400,width=600'); return false;" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+    </div>
+    <table class="c" style="">
+      <tbody>
+	<tr>
+	  <td class="u" colspan="2">
+	    <form target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://inguzaudio.com/installation/linux/" onfocus="this.focus();this.select();" /><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20120403021808" /><input type="submit" value="Go" /></form>
+	  </td>
+	  <td class="n" rowspan="2" style="width:110px;">
+	    <table>
+	      <tbody>
+		<!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+		<tr class="m">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20111003010841/http://inguzaudio.com:80/installation/linux/" title="03 Oct 2011"><strong>Oct</strong></a></td>
+		  <td class="c" id="displayMonthEl" title="You are here: 02:18:08 Apr 03, 2012">APR</td>
+		  <td class="f" nowrap="nowrap">May</td>
+		</tr>
+		<!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+		<tr class="d">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20111003010841/http://inguzaudio.com:80/installation/linux/" title="01:08:41 Oct 03, 2011"><img src="/static/images/toolbar/wm_tb_prv_on.png" alt="Previous capture" width="14" height="16" border="0" /></a></td>
+		  <td class="c" id="displayDayEl" style="width:34px;font-size:24px;" title="You are here: 02:18:08 Apr 03, 2012">03</td>
+		  <td class="f" nowrap="nowrap"><img src="/static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0" /></td>
+		</tr>
+		<!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+		<tr class="y">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20100417231033/http://inguzaudio.com:80/installation/linux/" title="17 Apr 2010"><strong>2010</strong></a></td>
+		  <td class="c" id="displayYearEl" title="You are here: 02:18:08 Apr 03, 2012">2012</td>
+		  <td class="f" nowrap="nowrap">2013</td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="s">
+	    	    <div id="wm-nav-captures">
+	      	      <a class="t" href="/web/20120403021808*/http://inguzaudio.com/installation/linux/" title="See a list of every capture for this URL">11 captures</a>
+	      <div class="r" title="Timespan for captures of this URL">17 Jan 2007 - 03 Apr 2012</div>
+	      </div>
+	  </td>
+	  <td class="k">
+	    <a href="" id="wm-graph-anchor">
+	      <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+		<canvas id="wm-sparkline-canvas" width="550" height="27" border="0"></canvas>
+	      </div>
+	    </a>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+    <div style="position:absolute;bottom:0;right:2px;text-align:right;">
+      <a id="wm-expand" class="wm-btn" href="#expand" onclick="__wm.ex(event);return false;"><span class="iconochive-down-solid"></span> <span style="font-size:80%">About this capture</span></a>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none;">
+            <div style="background-color:#353535;color:#aaa;font-weight:bold;text-align:center;"><a class="wm-selector selected" href="javascript:void(0)">COLLECTED BY</a></div>
+    <div style="padding:3px;position:relative;">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/webwidecrawl);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/webwidecrawl" target="_new"><span class="wm-title">Internet Archive</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  The Internet Archive discovers and captures web pages through many different web crawls.
+
+At any given time several distinct crawls are running, some for months, and some every day or longer.
+
+View the web archive through the <a href="http://archive.org/web/web.php">Wayback Machine</a>.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/wide00004)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/wide00004" target="_new"><span class="wm-title">Wide Crawl started January 2012</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Web wide crawl with initial seedlist and crawler configuration from January 2012 using HQ software.
+	</div>
+	      </div>
+    </div></div></div></div></div><script type="text/javascript">
+__wm.bt(550,27,25,2,"web","http://inguzaudio.com/installation/linux/","2012-04-03",1996);
+</script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+<div class="body">
+
+<div id="content-main">
+	<h1>Installation on Red Hat linux</h1>
+	<div class="entry">
+		<h3>System Requirements</h3>
+<p>If your PC doesn&#8217;t meet these system requirements, the Inguz processor probably won&#8217;t work.</p>
+<ul>
+<li>PC running Red Hat (or probably other linux distributions, but we only tested on RHEL 4.0)</li>
+<li>At least 2GHz CPU processor;</li>
+<li>At least 512MB RAM memory;</li>
+<li>At least 10GB free disk space.</li>
+</ul>
+<p>The most important thing is to have a fast CPU.  NAS devices or other low-power processors won&#8217;t be fast enough.  Although this has only been tested on x86, it should work well on x64 and other architectures including multiprocessor systems.</p>
+<h3>Things To Do First</h3>
+<p>Before you install the Inguz plugin and processor:</p>
+<ul>
+<li>Install <a title="SlimServer" href="https://web.archive.org/web/20120403021808/http://www.slimdevices.com/su_downloads.html">SlimServer</a> version 6.1 or later. (You probably did this already).</li>
+<li>Install <a href="https://web.archive.org/web/20120403021808/http://www.mono-project.com/">Mono</a> version 1.2 or later.</li>
+</ul>
+<p>To install Mono, choose the appropriate &#8220;Stable&#8221; link from their downloads page (<a href="https://web.archive.org/web/20120403021808/http://www.mono-project.com/Downloads">http://www.mono-project.com/Downloads</a>).  You need to install at least the <span class="menu">mono-core</span> package.</p>
+<p>Be sure to install as root. If you install Mono with a non-root login, it won&#8217;t work properly with SlimServer.</p>
+<p>Finally, check that <span class="menu">mono -V</span> shows version 1.2 or greater.</p>
+<h3>Installing the Plugin</h3>
+<p>The plugin is the &#8220;user interface&#8221;: it lets you control filter functions from the Squeezebox remote control. To install:</p>
+<ul>
+<li><a href="https://web.archive.org/web/20120403021808/http://www.inguzaudio.com/EQ/download.php">Download the plugin</a>.</li>
+<li>Unzip in the SlimServer Plugins directory.<br/>
+You should end up with a folder <span class="menu">/usr/local/slimserver/Plugins/InguzEQ</span> containing the plugin file <span class="menu">Plugin.pm</span> and a few other supporting files.</li>
+<li>Set this folder&#8217;s owner to &#8220;slimserver&#8221; (<span class="menu">chown slimserver /usr/local/slimserver/Plugins/InguzEQ/</span>).</li>
+<li>Make a folder <span class="menu">/usr/share/InguzEQ/</span>, and set its owner to &#8220;slimserver&#8221; (<span class="menu">chown slimserver /usr/share/InguzEQ/</span>).</li>
+<li>Restart SlimServer.</li>
+<li>From the SlimServer web interface, select <span class="menu">Server Settings -&gt; Plugins</span>. Verify that the &#8220;EQ&#8221; plugin is checked.</li>
+<li>From the SlimServer web interface, select <span class="menu">Player Settings -&gt; Menus</span>. Verify that the &#8220;Plugins&#8221; menu or the &#8220;EQ&#8221; plugin are active.</li>
+<li>Using the remote control, select the &#8220;EQ&#8221; menu (under Plugins). You will see a message indicating that SlimServer must be restarted.</li>
+<li>Restart SlimServer a second time.</li>
+</ul>
+<h3>Installing the Filter Processor</h3>
+<p>The filter processor is the &#8220;engine&#8221;: it processes audio files as they are played, and sends the processed audio to your Squeezebox or Transporter. To install the processor:</p>
+<ul>
+<li><a href="https://web.archive.org/web/20120403021808/http://www.inguzaudio.com/DSP/download.php">Download the filter processor</a>.</li>
+<li>Unzip in the <span class="menu">/usr/local/slimserver/Bin/i386-linux/</span> folder.<br/>
+You&#8217;ll see a few new files, including <span class="menu">InguzDSP.exe</span>, in the folder.</li>
+<li>Download the wrapper shell-script, in /usr/local/slimserver/Bin/i386-linux/:<br/>
+<span class="menu">cd /usr/local/slimserver/Bin/i386-linux<br/>
+wget <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/DSP/linux/InguzDSP">http://inguzaudio.com/DSP/linux/InguzDSP</a><br/>
+chmod +x InguzDSP</span></li>
+</ul>
+<h3>Configuring File Types</h3>
+<p>After installing the plugin and the filter processor, you need to configure SlimServer to use them for particular types of audio files. You can choose to only process certain files (FLAC, or MP3, for example), but you&#8217;ll usually want to set this configuration to process every type of audio.</p>
+<p>To playback MP3 files with InguzDSP, you will need to install LAME.  Follow the <a href="https://web.archive.org/web/20120403021808/http://wiki.slimdevices.com/index.cgi?LAMEForTranscoding">LAME instructions</a> on the Slim Wiki.</p>
+<p>From the SlimServer web interface, select <span class="menu">Server Settings -&gt; File Types</span>. Check all the boxes which have &#8220;InguzDSP&#8221; in the decoder listing, and uncheck everything else.</p>
+<p>Finally, restart SlimServer again.</p>
+<h3>Running</h3>
+<p>Now the plugin and filter processor are installed, you should be able to play music.  From the remote control, you can configure the plugin and change equalization settings.</p>
+<p>More detail about using the remote control can be found <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/usage/plugin/">here</a>.</p>
+<p>For room correction, you need to create and install <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/usage/plugin/settings/room-correction-filters/">room correction filters</a>.</p>
+<p>After playing the first track, check that there&#8217;s a file <span class="menu">log.txt</span> in the folder <span class="menu">/usr/share/InguzEQ/</span>. This is the filter processor&#8217;s log file, and you should read it occasionally to check that the filter processor is working properly. More detail about the log file can be found <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/usage/logfile/">here</a>.</p>
+<p> </p>
+	</div>
+</div>
+</div>
+
+<span class="breadcrumb"><a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/" title="">inguz audio</a> / <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/installation/" title="Installation">Installation</a> / <a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/installation/linux/" title="Installation on Red Hat linux">Installation on Red Hat linux</a></span>
+
+<span class="inguzlogo"><a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/"><img src="https://web.archive.org/web/20120403021808im_/http://inguzaudio.com/inguz_small.png" width="192" height="104" border="0" alt="inguz audio"/></a></span>
+
+<span class="copyshort">&copy; 2012</span>
+
+<div id="tab_bar">
+	<ul>
+		<li id="inguz_main"><a href="https://web.archive.org/web/20120403021808/http://inguzaudio.com/">inguz audio <img src="https://web.archive.org/web/20120403021808im_/http://inguzaudio.com/menu_action_down.gif" style="border:none; margin-top:4px;" alt="V"/></a></li>
+		<li id="inguz_forums"><a href="https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/">forum <img src="https://web.archive.org/web/20120403021808im_/http://inguzaudio.com/menu_action_down.gif" style="border:none; margin-top:4px;" alt="V"/></a></li>
+		<li><a href="https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?autocom=gallery">gallery</a></li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+menu_build_menu(
+	"inguz_main",
+	new Array(
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/' onclick='menu_action_close();'>home</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/blog/' onclick='menu_action_close();'>blog</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/downloads/' onclick='menu_action_close();'>downloads</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/installation/' onclick='menu_action_close();'>installation</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/usage/' onclick='menu_action_close();'>usage</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/measurement/' onclick='menu_action_close();'>measurement</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://inguzaudio.com/support/' onclick='menu_action_close();'>support</a>"
+	)
+);
+menu_build_menu(
+	"inguz_forums",
+	new Array(
+			 " <a href='https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?' onclick='menu_action_close();'>home</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?act=Members' onclick='menu_action_close();'>members</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?act=Search&amp;f=0' onclick='menu_action_close();'>search</a>",
+			 " <a href='https://web.archive.org/web/20120403021808/http://forum.inguzaudio.com/index.php?act=Help' onclick='menu_action_close();'>help</a>"
+	)
+);
+
+menu_do_global_init();
+//]]>
+</script>
+
+</body>
+</html>
