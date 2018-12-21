@@ -41,6 +41,19 @@ package Plugins::InguzEQ::Plugin;
 #
 # Revision history:
 #
+# JB's edits
+# 20181212			added aac, mp4 filetypes
+# 					corrected alc filetype to work with later versions of LMS
+# 					deleted aap entry - replaced with aac entry
+# 					added spt entry for Spotty (spotify plugin)
+# 					changed FLAC compression levels to 0 (were 5)
+# 					(very little lost in size but 0 takes significantly less time to encode)
+#
+# 20170805			Warning: Using a hash as a reference is deprecated at 3138
+# 					L3138 $request->addResultLoop( 'Points_loop', $cnt, $ff, %h->{$ff} );
+# 					changed %h->{$ff} to $h{$ff}
+#
+# High Pyle's revisions start here
 # 0.9.33   20120101   encode with flac -5, CPU is cheap now
 #          20110601   Merge contrib from do0g
 # 0.9.30   20090105   SqueezeCenter 7.3 support
@@ -109,6 +122,8 @@ package Plugins::InguzEQ::Plugin;
 # 0.9.7    20060730   Add 'flatness' control
 # 0.9.6    20060716   Transcode to FLAC24 to avoid losing any dynamic range
 # 0.9.5    20060603   Beta release under MIT-style free software license
+#
+#
 
 
 use strict;
@@ -3731,22 +3746,26 @@ mov flc * $CLIENTID$
 EOF1
 }
 
-
+# added aac entry (jb)
+# deleted aap entry (jb)
+# replaced alc entry (jb)
+# added mp4 entry (jb)
+# added spt (spotty) (jb)
 sub template_WAV16
 {
 	return <<'EOF1';
 
-aap wav * $CLIENTID$
-	#IFR
-	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
+aac wav * $CLIENTID$
+	# IF
+	[faad] -q -w -f 1 $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
 
 aif wav * $CLIENTID$
 	# FT:{START=-skip %t}
 	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -d 16
 
 alc wav * $CLIENTID$
-	# F
-	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
+	# FT:{START=-j %s}U:{END=-e %u}
+	[faad] -q -w -f 1 $START$ $END$ $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
 
 amb wav * $CLIENTID$
 	# IFT:{START=-skip %t}
@@ -3768,6 +3787,10 @@ mp3 wav * $CLIENTID$
 	# IFD:{RESAMPLE=--resample %D}
 	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
 
+mp4 wav * $CLIENTID$
+	# FT:{START=-j %s}U:{END=-e %u}
+	[faad] -q -w -f 1 $START$ $END$ $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
+
 mpc wav * $CLIENTID$
 	# IR
 	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
@@ -3775,6 +3798,10 @@ mpc wav * $CLIENTID$
 ogg wav * $CLIENTID$
 	# IFD:{RESAMPLE=-r %D}
 	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -d 16
+
+spt flc * $CLIENTID$
+	# RT:{START=--start-position %s}
+	[spotty] -n Squeezebox -c "$CACHE$" --single-track $FILE$ --disable-discovery --disable-audio-cache $START$ | [sox]  -q -t raw -b 16 -e signed -c 2 -r 44.1k -L - -t wav  - | [$CONVAPP$] -id "$CLIENTID$" -wav -d 16
 
 uhj wav * $CLIENTID$
 	# FT:{START=-skip %t}
@@ -3797,65 +3824,78 @@ EOF1
 
 
 # transcode for 24-bit FLAC output (sb2, sb3, transporter)
+# aac & mp4 added by jb
+# deleted aap entry - jb
+# replaced alc - jb
+# added spt (spotty) (jb)
+# changed FLAC compressions level to 0 (was 5)
 sub template_FLAC24
 {
 	return <<'EOF1';
 
-aap flc * $CLIENTID$
-	#IFR
-	[mplayer] -ac faad -demuxer aac -really-quiet -vc null -vo null -cache 64 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=$PIPEOUT$ $FILE$ $PIPENUL$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+aac flc * $CLIENTID$
+	# IF
+	[faad] -q -w -f 1 $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 aif flc * $CLIENTID$
 	# FT:{START=-skip %t}
-	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -be -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 alc flc * $CLIENTID$
-	# F
-	[alac] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	# FT:{START=-j %s}U:{END=-e %u}
+	[faad] -q -w -f 1 $START$ $END$ $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs --totally-silent -0 --ignore-chunk-sizes -
 
 amb flc * $CLIENTID$
 	# IFT:{START=-skip %t}
-	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -amb -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 ape flc * $CLIENTID$
 	# F
-	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[mac] $FILE$ - -d | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 flc flc * $CLIENTID$
 	# FT:{START=--skip=%t}U:{END=--until=%v}
-	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[flac] -dcs $START$ $END$ -- $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 mov flc * $CLIENTID$
 	# FR
-	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[mov123] $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 mp3 flc * $CLIENTID$
 	# IFD:{RESAMPLE=--resample %D}
-	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[lame] --mp3input --decode $RESAMPLE$ --silent $FILE$ - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
+
+mp4 flc * $CLIENTID$
+	# FT:{START=-j %s}U:{END=-e %u}
+	[faad] -q -w -f 1 $START$ $END$ $FILE$ | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs --totally-silent -0 --ignore-chunk-sizes -
 
 mpc flc * $CLIENTID$
 	# IR
-	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[mppdec] --silent --prev --gain 3 - - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 ogg flc * $CLIENTID$
 	# IFD:{RESAMPLE=-r %D}
-	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[sox] -t ogg $FILE$ -t wav $RESAMPLE$ -w - | [$CONVAPP$] -id "$CLIENTID$" -be -wavo -d 24 | [flac] -cs -0 --totally-silent -
+
+spt flc * $CLIENTID$
+	# RT:{START=--start-position %s}
+	[spotty] -n Squeezebox -c "$CACHE$" --single-track $FILE$ --disable-discovery --disable-audio-cache $START$ | [sox]  -q -t raw -b 16 -e signed -c 2 -r 44.1k -L - -t wav  - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent --ignore-chunk-sizes -
 
 uhj flc * $CLIENTID$
 	# FT:{START=-skip %t}
-	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 wav flc * $CLIENTID$
 	# FT:{START=-skip %t}
-	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[$CONVAPP$] -id "$CLIENTID$" -input $FILE$ $START$ -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 wma flc * $CLIENTID$
 	# F:{PATH=%f}R:{PATH=%F}
-	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[wmadec] -w $PATH$ | [$CONVAPP$] -id "$CLIENTID$" -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 wvp flc * $CLIENTID$
 	# FT:{START=--skip=%t}U:{END=--until=%v}
-	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [InguzDSP] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -5 --totally-silent -
+	[wvunpack] $FILE$ -wq $START$ $END$ -o - | [$CONVAPP$] -id "$CLIENTID$" -wav -wavo -d 24 | [flac] -cs -0 --totally-silent -
 
 EOF1
 }
